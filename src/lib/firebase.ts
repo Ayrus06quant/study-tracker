@@ -1,6 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { config } from "@/config/unifiedConfig";
 
 const firebaseApp = getApps().length === 0
@@ -8,6 +8,9 @@ const firebaseApp = getApps().length === 0
   : getApp();
 
 export const auth = getAuth(firebaseApp);
-export const db = initializeFirestore(firebaseApp, {
-  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
-});
+
+export const db = typeof window !== "undefined"
+  ? initializeFirestore(firebaseApp, {
+      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    })
+  : getFirestore(firebaseApp);
